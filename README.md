@@ -1,2 +1,12 @@
 # Masters---Study-Project
 Mein Masters Studienprojekt
+
+Master Project
+
+The goal of this project is to study and showcase the problems of neural networks plasticity especially in the Deep RL context. Further works of the master thesis and also papers may be released on the methods to alleviate this symptoms.
+In this project we do a literature study on the methods that have been proposed to relieve the issue of plasticity loss in neural networks such as shrink and perturb, weight decay, layer normalization and a general visualization of the loss landscape change in neural networks based on these variations.
+We showcase the effects of these methods on CIFAR10 and MNIST easy and hard tasks, as mentioned in the “Understanding Plasticity in Neural Networks” by Google Deepmind team.
+Then we also view the effects of weight size on the plasticity to further prove the above intuition. Which is, if the input of the neural network are large numbers and we want to predict small numbers using that input, the weights and biases of the model will be small and no problem will arise. Although the reverse of this scenario is very problematic; Using small inputs to the neural network, the model cannot predict larger values, since in the training process the weights and biases of the model explode and this will result in the neurons dying. That will stop the model from being trained and progress halts. One of the points of our project is to show case this observation through experiments and implementation of the ideas brought up in the papers such as “Stop regressing”, which in detail studies the effects of changing the mindset of regression to classification and how this approach successfully mitigates the problems of the network plasticity mentioned above. Since the work of this papers has not been disclosed and only the ideas are share, this master projects goal is to have a solid baseline of code, which benchmarks these methods and gives a holistic implementation that we can use to visualize and get this intuition proved using multiple frameworks(such as multiple Atari games and also control tasks on the Mujoco simulation engine).
+
+* One limit of the work in case of two-hot encoding is that, using classification instead of regression will limit us to a range, out of which we cannot predict the value of the network. For example, changing the regression to classification on a network which predicts Q-values, we are bound to a certain range between two numbers that we cannot escape. This is one of the limitations of this work.
+

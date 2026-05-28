@@ -10,3 +10,60 @@ Then we also view the effects of weight size on the plasticity to further prove 
 
 * One limit of the work in case of two-hot encoding is that, using classification instead of regression will limit us to a range, out of which we cannot predict the value of the network. For example, changing the regression to classification on a network which predicts Q-values, we are bound to a certain range between two numbers that we cannot escape. This is one of the limitations of this work.
 
+---
+
+# Project Structure
+
+```text
+Masters-Study-Project/
+│
+├── configs/
+│   ├── environments/
+│   ├── models/
+│   ├── optimizers/
+│   ├── experiments/
+│   └── probes/
+│
+├── src/
+│   ├── environments/
+│   ├── agents/
+│   ├── models/
+│   ├── training/
+│   ├── replay/
+│   ├── probes/
+│   ├── metrics/
+│   ├── analysis/
+│   ├── interventions/
+│   ├── utils/
+│   └── visualization/
+│
+├── experiments/
+│   ├── section4/
+│   ├── section5/
+│   ├── section6/
+│   └── atari/
+│
+├── notebooks/
+├── outputs/
+│   ├── logs/
+│   ├── checkpoints/
+│   ├── figures/
+│   └── tables/
+│
+├── scripts/
+├── tests/
+├── PROJECT_ROADMAP.md
+└── README.md
+```
+
+## Current Focus
+
+The first implementation targets are:
+
+- DQN
+- Replay Buffer
+- Classification MDP environments
+- Plasticity probe framework
+
+These components form the foundation for reproducing the experiments from the paper.
+

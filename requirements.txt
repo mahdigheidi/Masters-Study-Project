@@ -1,0 +1,17 @@
+pyhessian
+
+matplotlib
+
+pip install seaborn
+
+pip install plotly
+
+pip install wandb
+
+pip install tensorboard
+
+pip install scikit-learn
+
+pip install umap-learn
+
+pip install pyhessian

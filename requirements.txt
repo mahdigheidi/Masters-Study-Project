@@ -1,17 +1,16 @@
-pyhessian
+# Core deep learning stack
+torch==2.12.0
+torchvision==0.27.0
 
-matplotlib
+# Numerical computing and tabular experiment summaries
+numpy==2.4.6
+pandas==3.0.3
+scipy==1.17.1
 
-pip install seaborn
+# Plotting and analysis
+matplotlib==3.10.9
+seaborn==0.13.2
+scikit-learn==1.9.0
 
-pip install plotly
-
-pip install wandb
-
-pip install tensorboard
-
-pip install scikit-learn
-
-pip install umap-learn
-
-pip install pyhessian
+# Notebook execution support
+ipykernel==7.2.0

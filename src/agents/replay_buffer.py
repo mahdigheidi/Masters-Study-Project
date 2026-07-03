@@ -6,42 +6,34 @@ import torch
 
 
 class ReplayBuffer:
-    def __init__(
-        self,
-        capacity,
-        state_shape,
-        device="cuda",
-    ):
+    def __init__(self, capacity):
         self.capacity = capacity
-        self.device = device
-
         self.buffer = deque(maxlen=capacity)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def push(
         self,
-        state,
+        image,
         action,
         reward,
-        next_state,
-        done,
+        next_image,
     ):
         self.buffer.append(
             (
-                state,
+                image,
                 action,
                 reward,
-                next_state,
-                done,
+                next_image,
             )
         )
 
     def sample(self, batch_size):
         batch = random.sample(self.buffer, batch_size)
 
-        states, actions, rewards, next_states, dones = zip(*batch)
+        images, actions, rewards, next_images = zip(*batch)
 
-        states = torch.tensor(
-            np.array(states),
+        images = torch.tensor(
+            np.array(images),
             dtype=torch.float32,
             device=self.device,
         )
@@ -58,24 +50,17 @@ class ReplayBuffer:
             device=self.device,
         )
 
-        next_states = torch.tensor(
-            np.array(next_states),
-            dtype=torch.float32,
-            device=self.device,
-        )
-
-        dones = torch.tensor(
-            dones,
+        next_images = torch.tensor(
+            np.array(next_images),
             dtype=torch.float32,
             device=self.device,
         )
 
         return (
-            states,
+            images,
             actions,
             rewards,
-            next_states,
-            dones,
+            next_images,
         )
 
     def __len__(self):

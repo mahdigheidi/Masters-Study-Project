@@ -27,7 +27,6 @@ from src.environments.hard_mdp import HardMDP
 from src.environments.sparse_mdp import SparseMDP
 from src.models.cnn import CNN
 from src.models.mlp import MLP
-from src.models.resnet import ResNet18
 from src.models.vit import VisionTransformer
 
 
@@ -167,12 +166,6 @@ def build_model_factory(
                 fc_dim=config.cnn_fc_dim,
                 use_layernorm=config.use_layernorm,
                 spectral_norm=config.spectral_norm,
-            )
-        if config.architecture == "resnet18":
-            return ResNet18(
-                num_actions=10,
-                input_channels=int(input_shape[0]),
-                use_layernorm=config.use_layernorm,
             )
         if config.architecture == "vit":
             return VisionTransformer(

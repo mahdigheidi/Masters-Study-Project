@@ -39,6 +39,10 @@ from src.experiments.weight_norm import compute_weight_norm
 from src.experiments.weight_rank import compute_weight_rank
 
 
+from logging import getLogger
+
+logger = getLogger(__name__)
+
 FIGURE3_SCHEMA = [
     "run_id",
     "seed",
@@ -127,15 +131,15 @@ def _has_regression_support(x: np.ndarray, y: np.ndarray) -> bool:
     return len(x) >= 2 and float(np.std(x)) > 1e-12 and float(np.std(y)) > 1e-12
 
 
-def _mean_probe_loss(results) -> float:
-    return float(np.mean([result.final_loss for result in results]))
-
-
 def run_id_for(config: Figure3RunConfig) -> str:
     return (
         f"{config.observation_space}_{config.environment}_"
         f"{config.architecture}_{config.optimizer}_seed{config.seed}"
     )
+
+
+def _mean_probe_loss(results) -> float:
+    return float(np.mean([result.final_loss for result in results]))
 
 
 def compute_probe_loss(
@@ -150,6 +154,11 @@ def compute_probe_loss(
         steps=config.probe_steps,
         num_tasks=config.num_probe_tasks,
         batch_size=config.probe_batch_size,
+    )
+    print(
+        f"Computing probe loss with {config.num_probe_tasks} tasks, "
+        f"{config.probe_steps} steps per task, "
+        f"and batch size {config.probe_batch_size}."
     )
     return _mean_probe_loss(
         estimate_probe_loss(
@@ -205,7 +214,9 @@ def metric_row(
 
 
 def run_training_config(config: Figure3RunConfig) -> pd.DataFrame:
+    print(f"Running config: {asdict(config)}")
     set_seed(config.seed)
+    print("Loading dataset and building environment...")
     dataset, input_shape = load_dataset(config)
     env = build_environment(config, dataset)
     model_factory = build_model_factory(config, input_shape)
@@ -215,8 +226,11 @@ def run_training_config(config: Figure3RunConfig) -> pd.DataFrame:
     optimizer_factory = optimizer_factory_from_config(config)
     replay = ReplayBuffer(config.replay_capacity)
 
+    print(f"Running config: {asdict(config)}")
     for _ in range(config.warmup_steps):
         collect_transition(env, model, replay, epsilon=1.0, device=DEVICE)
+    print(f"Warmup complete. Replay buffer size: {len(replay)}")
+
 
     run_id = run_id_for(config)
     initial_probe_loss = compute_probe_loss(
@@ -226,6 +240,8 @@ def run_training_config(config: Figure3RunConfig) -> pd.DataFrame:
         replay,
         config,
     )
+    print(f"Initial probe loss: {initial_probe_loss:.4f}")
+
     rows = [
         metric_row(
             run_id,
@@ -241,7 +257,9 @@ def run_training_config(config: Figure3RunConfig) -> pd.DataFrame:
     ]
 
     last_loss = float("nan")
+    print(f"Starting training. Initial loss: {last_loss:.4f}")
     for step in range(1, config.train_steps + 1):
+        print(f"Step {step}/{config.train_steps} | Last loss: {last_loss:.4f}")
         epsilon = epsilon_at_step(config, step)
         collect_transition(env, model, replay, epsilon=epsilon, device=DEVICE)
         last_loss = train_dqn_step(
@@ -310,7 +328,7 @@ def make_paper_configs(
     for seed in seeds:
         for observation_space in ["mnist", "cifar10"]:
             for environment in ["easy", "hard", "sparse"]:
-                for architecture in ["mlp", "cnn"]:
+                for architecture in ["mlp"]:
                     configs.append(
                         Figure3RunConfig(
                             seed=seed,
@@ -320,7 +338,7 @@ def make_paper_configs(
                             environment=environment,
                             architecture=architecture,
                             hidden_dim=512,
-                            train_steps=100_000,
+                            train_steps=10_000,
                             target_update_period=1_000,
                             probe_every=5_000,
                             probe_steps=2_000,

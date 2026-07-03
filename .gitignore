@@ -99,3 +99,9 @@ Desktop.ini
 # Backup files
 *~
 *.swp
+
+# every pycache file is ignored in src and subdirectories of src
+/src/**/__pycache__/
+
+
+

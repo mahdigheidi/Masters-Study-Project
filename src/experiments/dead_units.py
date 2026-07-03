@@ -8,7 +8,7 @@ ReLUs instead of functional calls.
 
 from __future__ import annotations
 
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable
 
 import torch
 import torch.nn as nn

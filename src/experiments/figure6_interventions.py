@@ -14,7 +14,7 @@ import copy
 import random
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Callable, List, Optional, Sequence, Tuple
 
 import pandas as pd
 import torch
@@ -38,7 +38,6 @@ from src.experiments.dqn_classification import (
 from src.experiments.plasticity import PlasticityProbeConfig, measure_plasticity_loss
 from src.models.cnn import CNN
 from src.models.mlp import MLP
-from src.models.resnet import ResNet18
 from src.models.vit import VisionTransformer
 
 
@@ -133,10 +132,9 @@ def build_intervention_model_factory(
                 spectral_norm=config.spectral_norm,
             )
         elif config.architecture == "resnet18":
-            model = ResNet18(
-                output_dim=output_dim,
-                input_channels=int(input_shape[0]),
-                use_layernorm=config.use_layernorm,
+            raise ValueError(
+                "architecture='resnet18' is configured, but no ResNet18 "
+                "implementation exists in src.models."
             )
         elif config.architecture == "vit":
             model = VisionTransformer(
@@ -151,7 +149,7 @@ def build_intervention_model_factory(
         else:
             raise ValueError(f"Unknown architecture: {config.architecture}")
 
-        if config.spectral_norm and config.architecture in {"resnet18", "vit"}:
+        if config.spectral_norm and config.architecture == "vit":
             model = apply_spectral_normalization(model)
         return model
 

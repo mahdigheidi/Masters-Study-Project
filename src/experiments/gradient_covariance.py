@@ -1,0 +1,142 @@
+import torch
+import torch.nn.functional as F
+
+from sklearn.cluster import KMeans
+from matplotlib import pyplot as plt
+
+
+def flatten_gradients(model):
+    """
+    Flatten all parameter gradients into one vector.
+    """
+
+    grads = []
+
+    for param in model.parameters():
+
+        if param.grad is None:
+            continue
+
+        grads.append(param.grad.view(-1))
+
+    return torch.cat(grads)
+
+
+def compute_gradient_covariance(
+    model,
+    loss_fn,
+    inputs,
+    targets,
+):
+    """
+    Computes normalized gradient covariance matrix.
+
+    Returns:
+        C: [batch_size, batch_size]
+    """
+
+    batch_size = inputs.shape[0]
+
+    gradient_vectors = []
+
+    # compute gradient for each sample individually
+    for i in range(batch_size):
+
+        model.zero_grad()
+
+        x = inputs[i].unsqueeze(0)
+        y = targets[i].unsqueeze(0)
+
+        output = model(x)
+
+        loss = loss_fn(output, y)
+
+        loss.backward()
+
+        grad_vector = flatten_gradients(model)
+
+        gradient_vectors.append(grad_vector)
+
+    # shape:
+    # [batch_size, num_params]
+    G = torch.stack(gradient_vectors)
+
+    # normalize gradients
+    G = F.normalize(G, p=2, dim=1)
+
+    # covariance / cosine similarity matrix
+    C = G @ G.T
+
+    return C.detach().cpu()
+
+
+def sort_by_kmeans(C, num_clusters=10):
+
+    kmeans = KMeans(
+        n_clusters=num_clusters,
+        random_state=0,
+    )
+
+    labels = kmeans.fit_predict(C)
+
+    ordering = labels.argsort()
+
+    C_clustered = C[ordering][:, ordering]
+
+    return C_clustered
+
+
+if __name__ == "__main__":
+    # Here we do a simple test to check for the expected block structure of the covariance matrix on a simple classification task.
+    # we train a simple 2-layer MLP on MNIST for a few epochs, and then compute the covariance matrix on a batch of samples from the training set.
+    from torchvision.datasets import MNIST
+    from torchvision import transforms
+    from torch.utils.data import DataLoader
+    from tqdm import tqdm
+
+
+    transform = transforms.ToTensor()
+    mnist = MNIST(root="data", train=True, download=True, transform=transform)
+    train_subset = torch.utils.data.Subset(mnist, range(50000))
+    test_subset = torch.utils.data.Subset(mnist, range(10000))
+    dataloader = DataLoader(train_subset, batch_size=512, shuffle=True)
+    test_dataloader = DataLoader(test_subset, batch_size=512, shuffle=False)
+    model = torch.nn.Sequential(
+        torch.nn.Flatten(),
+        torch.nn.Linear(28 * 28, 128),
+        torch.nn.ReLU(),
+        torch.nn.Linear(128, 512),
+        torch.nn.ReLU(),
+        torch.nn.Linear(512, 10),
+    )
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loss_fn = torch.nn.CrossEntropyLoss()
+
+    EPOCHS = 10
+    # we log the loss and accuracy history just for sanity checking, but it's not strictly necessary for the covariance analysis
+    loss_history = []
+    accuracy_history = []
+    for epoch in range(EPOCHS):
+        for x, y in tqdm(dataloader):
+            optimizer.zero_grad()
+            logits = model(x)
+            loss = loss_fn(logits, y)
+            loss.backward()
+            optimizer.step()
+
+            loss_history.append(loss.item())
+            accuracy = (logits.argmax(dim=1) == y).float().mean().item()
+            accuracy_history.append(accuracy)
+
+        print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {loss.item():.4f}, Accuracy: {accuracy:.4f}")
+# compute covariance matrix on a batch of samples
+    inputs, targets = next(iter(test_dataloader))
+    covariance = compute_gradient_covariance(model, loss_fn, inputs, targets)
+
+    covariance_clustered = sort_by_kmeans(covariance, num_clusters=10)
+
+    plt.figure(figsize=(8, 8))
+    plt.imshow(covariance_clustered, cmap="coolwarm_r", vmin=-1, vmax=1)
+    plt.colorbar()
+    plt.title("Gradient Covariance Matrix (Clustered)")
+    plt.show()

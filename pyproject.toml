@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plasticity"
+version = "0.1.0"
+description = "Research code for studying neural network plasticity."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "Mohammad Mahdi Gheidi" },
+]
+dependencies = [
+    "torch==2.12.0",
+    "torchvision==0.27.0",
+    "numpy==2.4.6",
+    "pandas==3.0.3",
+    "scipy==1.17.1",
+    "matplotlib==3.10.9",
+    "seaborn==0.13.2",
+    "scikit-learn==1.9.0",
+    "ipykernel==7.2.0",
+    "tqdm",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src", "src.*"]
+namespaces = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+exclude = [
+    ".git",
+    ".github",
+    ".venv",
+    "__pycache__",
+    "notebooks",
+    "outputs",
+    "papers",
+    "reports",
+]
+
+[tool.ruff.lint]
+select = [
+    "E9",
+    "F",
+]

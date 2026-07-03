@@ -20,6 +20,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from tqdm import tqdm
+
 
 OptimizerFactory = Callable[[nn.Module], torch.optim.Optimizer]
 ModelFactory = Callable[[], nn.Module]
@@ -27,7 +29,7 @@ ModelFactory = Callable[[], nn.Module]
 
 @dataclass
 class PlasticityProbeConfig:
-    steps: int = 2_000
+    steps: int = 500
     num_tasks: int = 10
     batch_size: Optional[int] = None
     target_scale: float = 1e5
@@ -104,7 +106,8 @@ def train_probe_task(
         learning_curve.append({"step": 0.0, "loss": initial_loss})
 
     probe_model.train()
-    for step in range(1, config.steps + 1):
+    for step in tqdm(range(1, config.steps + 1)):
+        # print(f"Probe training step {step}/{config.steps}")
         indices = _sample_indices(inputs, config.batch_size)
         if indices is None:
             batch_targets = targets
@@ -147,6 +150,7 @@ def run_random_probe_task(
     optimizer_factory: OptimizerFactory,
     config: PlasticityProbeConfig,
 ) -> ProbeTaskResult:
+    print(f"Running random probe task with {config.steps} steps and batch size {config.batch_size}.")
     random_model = random_model_factory().to(_device_of(model))
     targets = make_random_function_targets(
         model,
@@ -154,6 +158,7 @@ def run_random_probe_task(
         inputs,
         target_scale=config.target_scale,
     )
+    print(f"Random targets generated with shape {targets.shape}.")
     return train_probe_task(model, inputs, targets, optimizer_factory, config)
 
 

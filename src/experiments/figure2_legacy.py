@@ -361,7 +361,7 @@ def make_figure2(results, save_path="lyle2023_figure2_fixed.png"):
 if __name__ == "__main__":
     results = run_experiment(
         n_target_updates = 5,
-        iters_per_update = 20,
+        iters_per_update = 2000,
         k_cov            = 64,    # increase to 512 to match paper exactly
         n_iter_lanczos   = 100,
         n_v_lanczos      = 3,

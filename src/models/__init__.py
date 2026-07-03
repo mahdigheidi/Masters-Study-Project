@@ -7,7 +7,6 @@ figures.
 
 from .cnn import CNN
 from .mlp import MLP
-from .resnet import ResNet18
 from .vit import VisionTransformer
 
 __all__ = ["CNN", "MLP", "ResNet18", "VisionTransformer"]

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 import torch.nn.functional as F
 from matplotlib import pyplot as plt
@@ -83,6 +85,40 @@ def sort_by_kmeans(covariance, num_clusters=10):
     covariance_clustered = covariance[ordering][:, ordering]
 
     return covariance_clustered
+
+
+def plot_gradient_covariance(curves, iter, seed, batch_size=None, num_clusters=None, out_dir="."):
+    """Plot one or more named gradient-covariance heatmaps side by side.
+
+    ``curves`` is a sequence of ``(covariance, label)`` tuples -- e.g. one
+    for the gradient-descent trajectory and one for the Brownian-motion
+    trajectory (Lyle et al. Figure 2 compares exactly these two, reordered
+    by KMeans clustering so same-cluster inputs sit adjacent).
+    """
+    fig, axes = plt.subplots(1, len(curves), figsize=(6 * len(curves), 5))
+    if len(curves) == 1:
+        axes = [axes]
+    fig.suptitle(f'Gradient Covariance (Iteration {iter}, Seed {seed})', fontsize=11)
+
+    subtitle_bits = []
+    if batch_size is not None:
+        subtitle_bits.append(f"batch k={batch_size}")
+    if num_clusters is not None:
+        subtitle_bits.append(f"kmeans clusters={num_clusters}")
+    subtitle = ", ".join(subtitle_bits)
+
+    for ax, (covariance, label) in zip(axes, curves):
+        im = ax.imshow(covariance, cmap="coolwarm_r", vmin=-1, vmax=1, aspect="equal")
+        ax.set_title(label, fontsize=11)
+        ax.set_xlabel(f"Input index ({subtitle})" if subtitle else "Input index", fontsize=8)
+        ax.set_ylabel("Input index", fontsize=9)
+        ax.tick_params(labelsize=8)
+        fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+    fig.tight_layout()
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_dir / f'gradient_covariance_{iter}_{seed}.png', dpi=300)
 
 
 if __name__ == "__main__":

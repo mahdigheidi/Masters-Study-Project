@@ -37,7 +37,7 @@ if __name__ == "__main__":
     from torchvision.datasets import MNIST
     import matplotlib.pyplot as plt
 
-    dataset = MNIST(root="data", train=True, download=True)
+    dataset = MNIST(root="../data", train=True, download=True)
     # plot a few images of the dataset
 
     env = HardMDP(dataset)
@@ -64,4 +64,3 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.show()
-

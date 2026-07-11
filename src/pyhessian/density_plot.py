@@ -29,19 +29,34 @@ def get_esd_plot(eigenvalues, weights, iter, seed, out_dir=".", sigma_squared=0.
     density, grids = density_generate(
         eigenvalues, weights, num_bins=num_bins, sigma_squared=sigma_squared,
     )
-    plt.title(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=10)
-    # Lyle et al. (Figure 2) plot the Ghorbani et al. Lanczos/Gaussian-kernel
-    # density estimate on linear axes, not Ghorbani et al.'s own log-scale
-    # convention -- match the paper we're reproducing here.
-    plt.plot(grids, density)
-    plt.ylabel('Density', fontsize=10, labelpad=10)
-    plt.xlabel('Eigenvalue', fontsize=10, labelpad=10)
-    plt.xticks(fontsize=8)
-    plt.yticks(fontsize=8)
-    plt.tight_layout()
+
+    fig, (ax_linear, ax_log) = plt.subplots(1, 2, figsize=(11, 4))
+    fig.suptitle(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=11)
+
+    # Left: linear axes, matching how Lyle et al. (Figure 2) present this
+    # estimate -- see the density_generate docstring/comment for why the
+    # bandwidth is tuned the way it is.
+    ax_linear.plot(grids, density)
+    ax_linear.set_title('Linear scale', fontsize=9)
+    ax_linear.set_ylabel('Density', fontsize=10, labelpad=10)
+    ax_linear.set_xlabel('Eigenvalue', fontsize=10, labelpad=10)
+    ax_linear.tick_params(labelsize=8)
+
+    # Right: log-scale density (Ghorbani et al.'s own plotting convention).
+    # Outlier eigenvalues can carry a vanishingly small fraction of the SLQ
+    # weight (often <0.01% here) -- too small to render as a visible bump on
+    # a linear axis no matter how the kernel is tuned, but real and visible
+    # once density is put on a log scale.
+    ax_log.semilogy(grids, density + 1e-12)
+    ax_log.set_title('Log scale (reveals low-weight outliers)', fontsize=9)
+    ax_log.set_ylabel('Density (log scale)', fontsize=10, labelpad=10)
+    ax_log.set_xlabel('Eigenvalue', fontsize=10, labelpad=10)
+    ax_log.tick_params(labelsize=8)
+
+    fig.tight_layout()
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(out_dir / f'esd_plot_{iter}_{seed}.png', dpi=300)
+    fig.savefig(out_dir / f'esd_plot_{iter}_{seed}.png', dpi=300)
 
 
 def density_generate(eigenvalues,

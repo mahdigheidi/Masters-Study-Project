@@ -33,6 +33,14 @@ venv/
 # Ignore data directory at project root
 /data/
 data/*
+notebooks/data/
+
+# Generated experiment artifacts (checkpoints, figures, tables)
+notebooks/checkpoints/
+notebooks/outputs/
+notebooks/*.png
+notebooks/*.pdf
+/outputs/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

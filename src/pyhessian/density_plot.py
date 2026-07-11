@@ -28,16 +28,14 @@ def get_esd_plot(eigenvalues, weights, iter, seed, out_dir="."):
     eigenvalues = np.real(np.asarray(eigenvalues))
     density, grids = density_generate(eigenvalues, weights)
     plt.title(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=10)
-    # plt.plot(grids, density)
-    # plt.yscale('linear')
-    # plt.ylim(0, 0.5)
-    plt.semilogy(grids, density)
-    plt.yscale('log')
-    plt.ylabel('Density Log scale', fontsize=10, labelpad=10)
+    # Lyle et al. (Figure 2) plot the Ghorbani et al. Lanczos/Gaussian-kernel
+    # density estimate on linear axes, not Ghorbani et al.'s own log-scale
+    # convention -- match the paper we're reproducing here.
+    plt.plot(grids, density)
+    plt.ylabel('Density', fontsize=10, labelpad=10)
     plt.xlabel('Eigenvalue', fontsize=10, labelpad=10)
     plt.xticks(fontsize=8)
     plt.yticks(fontsize=8)
-    # plt.axis([eigenvalues.min() - 1, eigenvalues.max() + 1, None, None])
     plt.tight_layout()
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)

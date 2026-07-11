@@ -9,11 +9,13 @@ is exact for a 1-dimensional Hessian, and one-parameter power iteration
 converges immediately).
 """
 
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
 
 from src.pyhessian import Hessian
+from src.pyhessian.density_plot import density_generate
 
 
 def _build_scalar_regression_problem():
@@ -59,3 +61,27 @@ def test_density_places_its_mass_near_the_analytic_eigenvalue():
 
     assert weighted_mean == pytest.approx(analytic_hessian, rel=1e-2)
     assert sum(weights) == pytest.approx(1.0, rel=1e-6)
+
+
+def test_density_generate_integrates_to_one():
+    # Mirrors a real SLQ result: most weight concentrated at/near eigenvalue 0.
+    eigenvalues = [[0.0, 0.05, -0.1, 5.0, 10.0]]
+    weights = [[0.6, 0.15, 0.1, 0.1, 0.05]]
+
+    density, grids = density_generate(eigenvalues, weights, num_bins=2000)
+
+    integral = np.sum(density) * (grids[1] - grids[0])
+    assert integral == pytest.approx(1.0, rel=1e-3)
+
+
+def test_density_generate_wider_kernel_lowers_the_peak():
+    # A too-narrow kernel renders concentrated SLQ weight as an artificially
+    # tall, needle-thin spike (the bug this test guards against); widening
+    # sigma_squared must spread the same probability mass into a lower peak.
+    eigenvalues = [[0.0, 0.05, -0.1, 5.0, 10.0]]
+    weights = [[0.6, 0.15, 0.1, 0.1, 0.05]]
+
+    narrow_density, _ = density_generate(eigenvalues, weights, sigma_squared=1e-4)
+    wide_density, _ = density_generate(eigenvalues, weights, sigma_squared=0.02)
+
+    assert wide_density.max() < narrow_density.max()

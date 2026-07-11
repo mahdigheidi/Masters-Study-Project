@@ -24,9 +24,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def get_esd_plot(eigenvalues, weights, iter, seed, out_dir="."):
+def get_esd_plot(eigenvalues, weights, iter, seed, out_dir=".", sigma_squared=0.02, num_bins=2000):
     eigenvalues = np.real(np.asarray(eigenvalues))
-    density, grids = density_generate(eigenvalues, weights)
+    density, grids = density_generate(
+        eigenvalues, weights, num_bins=num_bins, sigma_squared=sigma_squared,
+    )
     plt.title(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=10)
     # Lyle et al. (Figure 2) plot the Ghorbani et al. Lanczos/Gaussian-kernel
     # density estimate on linear axes, not Ghorbani et al.'s own log-scale
@@ -45,7 +47,14 @@ def get_esd_plot(eigenvalues, weights, iter, seed, out_dir="."):
 def density_generate(eigenvalues,
                      weights,
                      num_bins=2000,
-                     sigma_squared=1e-4,
+                     # Small/under-parameterized networks (like the toy MLPs in this
+                     # repo) can have a large fraction of the Lanczos/SLQ weight
+                     # concentrated at a single near-zero node. The upstream
+                     # PyHessian default (1e-5) was tuned for much larger models and
+                     # renders that as an extremely tall, needle-thin spike here
+                     # instead of a legible density curve -- widen the kernel so the
+                     # rendered scale is comparable to the reference figure.
+                     sigma_squared=0.02,
                      overhead=0.01):
 
     eigenvalues = np.real(np.asarray(eigenvalues))

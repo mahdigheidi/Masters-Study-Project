@@ -24,6 +24,12 @@ dependencies = [
     "tqdm",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "ruff==0.8.6",
+    "pytest>=8.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src", "src.*"]

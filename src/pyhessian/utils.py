@@ -19,9 +19,6 @@
 #*
 
 import torch
-import math
-from torch.autograd import Variable
-import numpy as np
 
 
 def group_product(xs, ys):

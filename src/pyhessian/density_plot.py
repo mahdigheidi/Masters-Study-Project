@@ -18,28 +18,32 @@
 # along with PyHessian.  If not, see <http://www.gnu.org/licenses/>.
 #*
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def get_esd_plot(eigenvalues, weights):
+def get_esd_plot(eigenvalues, weights, iter, seed):
     eigenvalues = np.real(np.asarray(eigenvalues))
     density, grids = density_generate(eigenvalues, weights)
-    plt.plot(grids, density + 1.0e-7)
-    plt.ylabel('Density (Log Scale)', fontsize=14, labelpad=10)
-    plt.xlabel('Eigenvlaue', fontsize=14, labelpad=10)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.axis([eigenvalues.min() - 1, eigenvalues.max() + 1, None, None])
+    plt.title(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=10)
+    # plt.plot(grids, density)
+    # plt.yscale('linear')
+    # plt.ylim(0, 0.5)
+    plt.semilogy(grids, density)
+    plt.yscale('log')
+    plt.ylabel('Density Log scale', fontsize=10, labelpad=10)
+    plt.xlabel('Eigenvalue', fontsize=10, labelpad=10)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
+    # plt.axis([eigenvalues.min() - 1, eigenvalues.max() + 1, None, None])
     plt.tight_layout()
-    plt.savefig('example.pdf')
+    plt.savefig(f'esd_plot_{iter}_{seed}.png', dpi=300)
 
 
 def density_generate(eigenvalues,
                      weights,
-                     num_bins=10000,
-                     sigma_squared=1e-5,
+                     num_bins=2000,
+                     sigma_squared=1e-4,
                      overhead=0.01):
 
     eigenvalues = np.real(np.asarray(eigenvalues))

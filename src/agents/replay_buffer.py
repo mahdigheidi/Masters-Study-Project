@@ -27,7 +27,8 @@ class ReplayBuffer:
             )
         )
 
-    def sample(self, batch_size):
+    def sample(self, batch_size, device=None):
+        device = self.device if device is None else device
         batch = random.sample(self.buffer, batch_size)
 
         images, actions, rewards, next_images = zip(*batch)
@@ -35,25 +36,25 @@ class ReplayBuffer:
         images = torch.tensor(
             np.array(images),
             dtype=torch.float32,
-            device=self.device,
+            device=device,
         )
 
         actions = torch.tensor(
             actions,
             dtype=torch.long,
-            device=self.device,
+            device=device,
         )
 
         rewards = torch.tensor(
             rewards,
             dtype=torch.float32,
-            device=self.device,
+            device=device,
         )
 
         next_images = torch.tensor(
             np.array(next_images),
             dtype=torch.float32,
-            device=self.device,
+            device=device,
         )
 
         return (
@@ -62,6 +63,12 @@ class ReplayBuffer:
             rewards,
             next_images,
         )
+
+    def sample_states(self, batch_size, device=None):
+        device = self.device if device is None else device
+        batch = random.sample(self.buffer, min(batch_size, len(self.buffer)))
+        images = [item[0] for item in batch]
+        return torch.tensor(np.array(images), dtype=torch.float32, device=device)
 
     def __len__(self):
         return len(self.buffer)

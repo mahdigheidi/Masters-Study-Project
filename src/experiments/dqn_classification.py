@@ -11,10 +11,9 @@ from __future__ import annotations
 
 import copy
 import random
-from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Deque, Dict, List, Optional, Sequence, Tuple
+from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -22,6 +21,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import datasets, transforms
 
+from src.agents.replay_buffer import ReplayBuffer
 from src.environments.easy_mdp import EasyMDP
 from src.environments.hard_mdp import HardMDP
 from src.environments.sparse_mdp import SparseMDP
@@ -64,44 +64,8 @@ class ClassificationDQNConfig:
     reset_last_layer_every: Optional[int] = None
 
 
-Transition = Tuple[torch.Tensor, int, float, torch.Tensor, bool]
-MetricCallback = Callable[[int, nn.Module, "ReplayBuffer"], Dict[str, object]]
-
-
-class ReplayBuffer:
-    def __init__(self, capacity: int):
-        self.buffer: Deque[Transition] = deque(maxlen=capacity)
-
-    def add(self, state, action, reward, next_state, done=False) -> None:
-        self.buffer.append(
-            (state.detach().cpu(), int(action), float(reward), next_state.detach().cpu(), bool(done))
-        )
-
-    def sample(
-        self,
-        batch_size: int,
-        device: torch.device | str = DEVICE,
-    ) -> Tuple[torch.Tensor, ...]:
-        batch = random.sample(self.buffer, batch_size)
-        states, actions, rewards, next_states, dones = zip(*batch)
-        return (
-            torch.stack(states).to(device),
-            torch.tensor(actions, dtype=torch.long, device=device),
-            torch.tensor(rewards, dtype=torch.float32, device=device),
-            torch.stack(next_states).to(device),
-            torch.tensor(dones, dtype=torch.float32, device=device),
-        )
-
-    def sample_states(
-        self,
-        batch_size: int,
-        device: torch.device | str = DEVICE,
-    ) -> torch.Tensor:
-        batch = random.sample(self.buffer, min(batch_size, len(self.buffer)))
-        return torch.stack([transition[0] for transition in batch]).to(device)
-
-    def __len__(self) -> int:
-        return len(self.buffer)
+Transition = Tuple[torch.Tensor, int, float, torch.Tensor]
+MetricCallback = Callable[[int, nn.Module, ReplayBuffer], Dict[str, object]]
 
 
 def set_seed(seed: int) -> None:
@@ -247,7 +211,7 @@ def collect_transition(
     observation = env.sample_observation()
     action = select_action(model, observation, epsilon, device=device)
     next_observation, reward, _ = env.step(action)
-    replay.add(observation, action, reward, next_observation, done=False)
+    replay.push(observation, action, reward, next_observation)
 
 
 def dqn_loss(
@@ -256,11 +220,11 @@ def dqn_loss(
     batch: Tuple[torch.Tensor, ...],
     gamma: float,
 ) -> torch.Tensor:
-    states, actions, rewards, next_states, dones = batch
+    states, actions, rewards, next_states = batch
     q_sa = model(states).gather(1, actions.unsqueeze(1)).squeeze(1)
     with torch.no_grad():
         next_q = target_model(next_states).max(dim=1).values
-        target = rewards + (1.0 - dones) * gamma * next_q
+        target = rewards + gamma * next_q
     return F.mse_loss(q_sa, target)
 
 

@@ -18,9 +18,12 @@
 # along with PyHessian.  If not, see <http://www.gnu.org/licenses/>.
 #*
 
-import argparse
-import importlib
-import os
-
-from .utils import group_product, group_add, normalization, get_params_grad, hessian_vector_product, orthnormal
-from .hessian import Hessian
+from .utils import (
+    group_product as group_product,
+    group_add as group_add,
+    normalization as normalization,
+    get_params_grad as get_params_grad,
+    hessian_vector_product as hessian_vector_product,
+    orthnormal as orthnormal,
+)
+from .hessian import Hessian as Hessian

@@ -24,34 +24,44 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def get_esd_plot(eigenvalues, weights, iter, seed, out_dir=".", sigma_squared=0.02, num_bins=2000):
-    eigenvalues = np.real(np.asarray(eigenvalues))
-    density, grids = density_generate(
-        eigenvalues, weights, num_bins=num_bins, sigma_squared=sigma_squared,
-    )
+def get_esd_plot(curves, iter, seed, out_dir=".", sigma_squared=0.02, num_bins=2000):
+    """Overlay one or more named eigenvalue-density curves on the same axes.
 
+    ``curves`` is a sequence of ``(eigenvalues, weights, label, color)``
+    tuples -- e.g. one for the gradient-descent trajectory and one for the
+    Brownian-motion trajectory (Lyle et al. Figure 2 compares exactly these
+    two on the same panel, distinguished by color and a legend).
+    """
     fig, (ax_linear, ax_log) = plt.subplots(1, 2, figsize=(11, 4))
     fig.suptitle(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=11)
 
-    # Left: linear axes, matching how Lyle et al. (Figure 2) present this
-    # estimate -- see the density_generate docstring/comment for why the
-    # bandwidth is tuned the way it is.
-    ax_linear.plot(grids, density)
+    for raw_eigenvalues, weights, label, color in curves:
+        eigenvalues = np.real(np.asarray(raw_eigenvalues))
+        density, grids = density_generate(
+            eigenvalues, weights, num_bins=num_bins, sigma_squared=sigma_squared,
+        )
+        # Left: linear axes, matching how Lyle et al. (Figure 2) present this
+        # estimate -- see the density_generate docstring/comment for why the
+        # bandwidth is tuned the way it is.
+        ax_linear.plot(grids, density, color=color, label=label)
+        # Right: log-scale density (Ghorbani et al.'s own plotting convention).
+        # Outlier eigenvalues can carry a vanishingly small fraction of the SLQ
+        # weight (often <0.01% here) -- too small to render as a visible bump
+        # on a linear axis no matter how the kernel is tuned, but real and
+        # visible once density is put on a log scale.
+        ax_log.semilogy(grids, density + 1e-12, color=color, label=label)
+
     ax_linear.set_title('Linear scale', fontsize=9)
     ax_linear.set_ylabel('Density', fontsize=10, labelpad=10)
     ax_linear.set_xlabel('Eigenvalue', fontsize=10, labelpad=10)
     ax_linear.tick_params(labelsize=8)
+    ax_linear.legend(fontsize=8)
 
-    # Right: log-scale density (Ghorbani et al.'s own plotting convention).
-    # Outlier eigenvalues can carry a vanishingly small fraction of the SLQ
-    # weight (often <0.01% here) -- too small to render as a visible bump on
-    # a linear axis no matter how the kernel is tuned, but real and visible
-    # once density is put on a log scale.
-    ax_log.semilogy(grids, density + 1e-12)
     ax_log.set_title('Log scale (reveals low-weight outliers)', fontsize=9)
     ax_log.set_ylabel('Density (log scale)', fontsize=10, labelpad=10)
     ax_log.set_xlabel('Eigenvalue', fontsize=10, labelpad=10)
     ax_log.tick_params(labelsize=8)
+    ax_log.legend(fontsize=8)
 
     fig.tight_layout()
     out_dir = Path(out_dir)

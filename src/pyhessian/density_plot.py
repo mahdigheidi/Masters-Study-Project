@@ -20,8 +20,8 @@
 
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def get_esd_plot(eigenvalues, weights, iter, seed, out_dir="."):

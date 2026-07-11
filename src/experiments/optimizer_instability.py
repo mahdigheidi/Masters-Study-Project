@@ -1,5 +1,6 @@
-import torch
 import random
+
+import torch
 
 
 class RandomLabelDataset(torch.utils.data.Dataset):
@@ -37,9 +38,9 @@ def train_instability_experiment(
     step = 0
 
     while step < total_steps:
-        for x, y in dataloader:
-            x = x.to(device)
-            y = y.to(device)
+        for batch_x, batch_y in dataloader:
+            x = batch_x.to(device)
+            y = batch_y.to(device)
 
             optimizer.zero_grad()
 

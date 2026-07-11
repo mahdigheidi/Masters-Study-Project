@@ -53,8 +53,8 @@ class ClassificationMDP:
         class_indices: Dict[int, List[int]] = {
             state: [] for state in range(self.spec.num_states)
         }
-        for idx, label in enumerate(labels):
-            label = int(label)
+        for idx, raw_label in enumerate(labels):
+            label = int(raw_label)
             if 0 <= label < self.spec.num_states:
                 class_indices[label].append(idx)
 

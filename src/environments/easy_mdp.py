@@ -28,8 +28,8 @@ class EasyMDP(ClassificationMDP):
 
 
 if __name__ == "__main__":
-    from torchvision.datasets import MNIST
     import matplotlib.pyplot as plt
+    from torchvision.datasets import MNIST
 
     dataset = MNIST(root="data", train=True, download=True)
     # plot a few images of the dataset

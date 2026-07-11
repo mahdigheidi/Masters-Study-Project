@@ -1,14 +1,14 @@
 
 
-import torch
 import numpy as np
+import torch
 
 from .utils import (
-    group_product,
-    group_add,
-    normalization,
     get_params_grad,
+    group_add,
+    group_product,
     hessian_vector_product,
+    normalization,
     orthnormal,
 )
 

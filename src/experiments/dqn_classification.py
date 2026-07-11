@@ -29,7 +29,6 @@ from src.models.cnn import CNN
 from src.models.mlp import MLP
 from src.models.vit import VisionTransformer
 
-
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 

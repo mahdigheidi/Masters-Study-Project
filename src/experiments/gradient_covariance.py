@@ -1,8 +1,7 @@
 import torch
 import torch.nn.functional as F
-
-from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
+from sklearn.cluster import KMeans
 
 
 def flatten_gradients(model):
@@ -59,39 +58,39 @@ def compute_gradient_covariance(
 
     # shape:
     # [batch_size, num_params]
-    G = torch.stack(gradient_vectors)
+    gradients = torch.stack(gradient_vectors)
 
     # normalize gradients
-    G = F.normalize(G, p=2, dim=1)
+    gradients = F.normalize(gradients, p=2, dim=1)
 
     # covariance / cosine similarity matrix
-    C = G @ G.T
+    covariance = gradients @ gradients.T
 
-    return C.detach().cpu()
+    return covariance.detach().cpu()
 
 
-def sort_by_kmeans(C, num_clusters=10):
+def sort_by_kmeans(covariance, num_clusters=10):
 
     kmeans = KMeans(
         n_clusters=num_clusters,
         random_state=0,
     )
 
-    labels = kmeans.fit_predict(C)
+    labels = kmeans.fit_predict(covariance)
 
     ordering = labels.argsort()
 
-    C_clustered = C[ordering][:, ordering]
+    covariance_clustered = covariance[ordering][:, ordering]
 
-    return C_clustered
+    return covariance_clustered
 
 
 if __name__ == "__main__":
     # Here we do a simple test to check for the expected block structure of the covariance matrix on a simple classification task.
     # we train a simple 2-layer MLP on MNIST for a few epochs, and then compute the covariance matrix on a batch of samples from the training set.
-    from torchvision.datasets import MNIST
-    from torchvision import transforms
     from torch.utils.data import DataLoader
+    from torchvision import transforms
+    from torchvision.datasets import MNIST
     from tqdm import tqdm
 
 

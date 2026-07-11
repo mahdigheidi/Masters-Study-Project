@@ -53,7 +53,26 @@ exclude = [
 select = [
     "E9",
     "F",
+    "I",
+    "N",
+    "PLC",
+    "PLE",
+    "PLW",
 ]
+ignore = [
+    # `import torch.nn.functional as F` is the standard PyTorch convention
+    # used throughout this codebase and the wider ecosystem (including
+    # PyTorch's own docs); renaming it would hurt readability, not help it.
+    "N812",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Vendored PyHessian (Yao & Gholami): variable names (Hv, THv, gradsH, T,
+# maxIter, ...) mirror the published algorithm and upstream repo. Renaming
+# them to satisfy naming conventions would reduce fidelity to the reference
+# implementation this code is a direct port of.
+"src/pyhessian/hessian.py" = ["N803", "N806"]
+"src/pyhessian/utils.py" = ["N803", "N806"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

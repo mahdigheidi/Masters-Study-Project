@@ -8,7 +8,6 @@ from src.environments.classification_mdp import (
 from src.environments.easy_mdp import EasyMDP
 from src.environments.hard_mdp import HardMDP
 from src.environments.sparse_mdp import SparseMDP
-
 from tests.conftest import make_toy_dataset
 
 

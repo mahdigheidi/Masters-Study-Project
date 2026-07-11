@@ -18,12 +18,22 @@
 # along with PyHessian.  If not, see <http://www.gnu.org/licenses/>.
 #*
 
+from .hessian import Hessian
 from .utils import (
-    group_product as group_product,
-    group_add as group_add,
-    normalization as normalization,
-    get_params_grad as get_params_grad,
-    hessian_vector_product as hessian_vector_product,
-    orthnormal as orthnormal,
+    get_params_grad,
+    group_add,
+    group_product,
+    hessian_vector_product,
+    normalization,
+    orthnormal,
 )
-from .hessian import Hessian as Hessian
+
+__all__ = [
+    "Hessian",
+    "get_params_grad",
+    "group_add",
+    "group_product",
+    "hessian_vector_product",
+    "normalization",
+    "orthnormal",
+]

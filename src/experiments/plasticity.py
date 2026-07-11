@@ -19,9 +19,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from tqdm import tqdm
-
 
 OptimizerFactory = Callable[[nn.Module], torch.optim.Optimizer]
 ModelFactory = Callable[[], nn.Module]

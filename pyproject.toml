@@ -54,3 +54,7 @@ select = [
     "E9",
     "F",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

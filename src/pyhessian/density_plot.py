@@ -18,11 +18,13 @@
 # along with PyHessian.  If not, see <http://www.gnu.org/licenses/>.
 #*
 
+from pathlib import Path
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def get_esd_plot(eigenvalues, weights, iter, seed):
+def get_esd_plot(eigenvalues, weights, iter, seed, out_dir="."):
     eigenvalues = np.real(np.asarray(eigenvalues))
     density, grids = density_generate(eigenvalues, weights)
     plt.title(f'Eigenvalue Density (Iteration {iter}, Seed {seed})', fontsize=10)
@@ -37,7 +39,9 @@ def get_esd_plot(eigenvalues, weights, iter, seed):
     plt.yticks(fontsize=8)
     # plt.axis([eigenvalues.min() - 1, eigenvalues.max() + 1, None, None])
     plt.tight_layout()
-    plt.savefig(f'esd_plot_{iter}_{seed}.png', dpi=300)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_dir / f'esd_plot_{iter}_{seed}.png', dpi=300)
 
 
 def density_generate(eigenvalues,

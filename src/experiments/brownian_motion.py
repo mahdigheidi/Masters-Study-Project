@@ -1,17 +1,23 @@
-import copy
 import torch
 
 
 @torch.no_grad()
 def brownian_update(model, step_norm):
-    for p in model.parameters():
-        noise = torch.randn_like(p)
+    """Perturb every parameter with noise whose combined L2 norm equals ``step_norm``.
 
-        noise = noise / noise.norm()
+    Scaling is computed across the whole flattened parameter vector (not
+    per-tensor), so this is directly comparable to an SGD step of the same
+    global update norm.
+    """
+    if step_norm <= 0:
+        return
 
-        noise = noise * step_norm
+    noise = [torch.randn_like(p) for p in model.parameters()]
+    total_norm = torch.sqrt(sum((n * n).sum() for n in noise))
+    scale = step_norm / (float(total_norm.item()) + 1e-12)
 
-        p.add_(noise)
+    for p, n in zip(model.parameters(), noise):
+        p.add_(n * scale)
 
 
 def compute_update_norm(model_before, model_after):
@@ -24,39 +30,3 @@ def compute_update_norm(model_before, model_after):
         total += ((p1 - p2) ** 2).sum()
 
     return total.sqrt()
-
-
-def run_brownian_experiment(
-    model,
-    optimizer,
-    loss_fn,
-    dataloader,
-    steps=100,
-):
-    gd_model = copy.deepcopy(model)
-    brownian_model = copy.deepcopy(model)
-
-    for step in range(steps):
-        x, y = next(iter(dataloader))
-
-        # ----- gradient descent -----
-
-        old_model = copy.deepcopy(gd_model)
-
-        optimizer.zero_grad()
-
-        logits = gd_model(x)
-
-        loss = loss_fn(logits, y)
-
-        loss.backward()
-
-        optimizer.step()
-
-        update_norm = compute_update_norm(old_model, gd_model)
-
-        # ----- brownian motion -----
-
-        brownian_update(brownian_model, update_norm)
-
-        print(f"Step {step} complete")

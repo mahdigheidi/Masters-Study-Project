@@ -19,6 +19,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from tqdm.auto import tqdm
 
 OptimizerFactory = Callable[[nn.Module], torch.optim.Optimizer]
 ModelFactory = Callable[[], nn.Module]
@@ -89,6 +90,7 @@ def train_probe_task(
     targets: torch.Tensor,
     optimizer_factory: OptimizerFactory,
     config: PlasticityProbeConfig,
+    progress_desc: Optional[str] = None,
 ) -> ProbeTaskResult:
     probe_model = copy.deepcopy(model).to(_device_of(model))
     inputs = inputs.to(_device_of(probe_model))
@@ -103,8 +105,14 @@ def train_probe_task(
         learning_curve.append({"step": 0.0, "loss": initial_loss})
 
     probe_model.train()
-    for step in range(1, config.steps + 1):
-        # print(f"Probe training step {step}/{config.steps}")
+    step_iter = tqdm(
+        range(1, config.steps + 1),
+        desc=progress_desc,
+        unit="step",
+        leave=False,
+        disable=progress_desc is None,
+    )
+    for step in step_iter:
         indices = _sample_indices(inputs, config.batch_size)
         if indices is None:
             batch_targets = targets
@@ -117,6 +125,9 @@ def train_probe_task(
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
+
+        if progress_desc is not None and step % 50 == 0:
+            step_iter.set_postfix(loss=f"{float(loss.detach().cpu()):.4f}")
 
         if config.log_every is not None and step % config.log_every == 0:
             with torch.no_grad():
@@ -146,8 +157,8 @@ def run_random_probe_task(
     inputs: torch.Tensor,
     optimizer_factory: OptimizerFactory,
     config: PlasticityProbeConfig,
+    progress_desc: Optional[str] = None,
 ) -> ProbeTaskResult:
-    # print(f"Running random probe task with {config.steps} steps and batch size {config.batch_size}.")
     random_model = random_model_factory().to(_device_of(model))
     targets = make_random_function_targets(
         model,
@@ -155,8 +166,9 @@ def run_random_probe_task(
         inputs,
         target_scale=config.target_scale,
     )
-    # print(f"Random targets generated with shape {targets.shape}.")
-    return train_probe_task(model, inputs, targets, optimizer_factory, config)
+    return train_probe_task(
+        model, inputs, targets, optimizer_factory, config, progress_desc=progress_desc
+    )
 
 
 def estimate_probe_loss(
@@ -165,6 +177,7 @@ def estimate_probe_loss(
     inputs: torch.Tensor,
     optimizer_factory: OptimizerFactory,
     config: PlasticityProbeConfig,
+    desc: Optional[str] = None,
 ) -> List[ProbeTaskResult]:
     return [
         run_random_probe_task(
@@ -173,8 +186,11 @@ def estimate_probe_loss(
             inputs,
             optimizer_factory,
             config,
+            progress_desc=(
+                None if desc is None else f"{desc} [task {task + 1}/{config.num_tasks}]"
+            ),
         )
-        for _ in range(config.num_tasks)
+        for task in range(config.num_tasks)
     ]
 
 

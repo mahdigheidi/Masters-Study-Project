@@ -17,7 +17,9 @@ import torch.nn as nn
 
 @torch.no_grad()
 def matrix_rank(weight_matrix: torch.Tensor, threshold: float = 1e-5) -> int:
-    matrix = weight_matrix.detach()
+    # SVD on CPU: torch.linalg.svdvals is not implemented for MPS, and these
+    # matrices are small enough that GPU offers no benefit anyway.
+    matrix = weight_matrix.detach().cpu()
     if matrix.dim() > 2:
         matrix = matrix.reshape(matrix.size(0), -1)
     singular_values = torch.linalg.svdvals(matrix)

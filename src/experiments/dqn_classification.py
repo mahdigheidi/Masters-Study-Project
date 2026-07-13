@@ -29,7 +29,18 @@ from src.models.cnn import CNN
 from src.models.mlp import MLP
 from src.models.vit import VisionTransformer
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def _default_device() -> torch.device:
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    # Apple-silicon GPU: ~3-4x faster than CPU for this project's batch-512
+    # MLP/CNN training and probe workloads (measured).
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
+DEVICE = _default_device()
 
 
 @dataclass

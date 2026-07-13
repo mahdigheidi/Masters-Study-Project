@@ -49,4 +49,3 @@ def test_weight_rank_statistics_reports_per_layer_and_aggregate():
     assert stats["0"] == 1.0
     assert stats["min_weight_rank"] <= stats["mean_weight_rank"] <= stats["max_weight_rank"]
     assert compute_weight_rank(model, threshold=1e-5) == stats["mean_weight_rank"]
-

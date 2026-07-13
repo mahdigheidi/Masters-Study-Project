@@ -24,7 +24,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def get_esd_plot(curves, iter, seed, out_dir=".", sigma_squared=0.02, num_bins=2000):
+# `iter` shadows the builtin, but it mirrors the vendored PyHessian parameter
+# name used by existing notebook callers -- renaming would break them.
+def get_esd_plot(  # pylint: disable=redefined-builtin
+    curves, iter, seed, out_dir=".", sigma_squared=0.02, num_bins=2000
+):
     """Overlay one or more named eigenvalue-density curves on the same axes.
 
     ``curves`` is a sequence of ``(eigenvalues, weights, label, color)``

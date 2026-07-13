@@ -28,7 +28,7 @@ def group_product(xs, ys):
     :param ys:
     :return:
     """
-    return sum([torch.sum(x * y) for (x, y) in zip(xs, ys)])
+    return sum(torch.sum(x * y) for (x, y) in zip(xs, ys))
 
 
 def group_add(params, update, alpha=1):
@@ -38,8 +38,8 @@ def group_add(params, update, alpha=1):
     :param update: list of data
     :return:
     """
-    for i, p in enumerate(params):
-        params[i].data.add_(update[i] * alpha)
+    for p, u in zip(params, update):
+        p.data.add_(u * alpha)
     return params
 
 

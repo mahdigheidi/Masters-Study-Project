@@ -30,13 +30,13 @@ class Hessian:
         """
 
         # make sure we either pass a single batch or a dataloader
-        assert (data != None and dataloader == None) or (data == None and
-                                                         dataloader != None)
+        assert (data is not None and dataloader is None) or (data is None and
+                                                             dataloader is not None)
 
         self.model = model.eval()  # make model is in evaluation model
         self.criterion = criterion
 
-        if data != None:
+        if data is not None:
             self.data = data
             self.full_dataset = False
         else:
@@ -57,7 +57,8 @@ class Hessian:
 
             params, _ = get_params_grad(self.model)
 
-            # if we only compute the Hessian information for a single batch data, we can re-use the gradients.
+            # if we only compute the Hessian information for a single batch of
+            # data, we can re-use the gradients.
             outputs = self.model(self.inputs)
             loss = self.criterion(outputs, self.targets)
             gradsH = torch.autograd.grad(loss, params, create_graph=True)
@@ -102,7 +103,8 @@ class Hessian:
         """
         compute the top_n eigenvalues using power iteration method
         maxIter: maximum iterations used to compute each single eigenvalue
-        tol: the relative tolerance between two consecutive eigenvalue computations from power iteration
+        tol: the relative tolerance between two consecutive eigenvalue
+            computations from power iteration
         top_n: top top_n eigenvalues will be computed
         """
 
@@ -121,7 +123,7 @@ class Hessian:
                  ]  # generate random vector
             v = normalization(v)  # normalize the vector
 
-            for i in range(maxIter):
+            for _ in range(maxIter):
                 v = orthnormal(v, eigenvectors)
                 self.model.zero_grad()
 
@@ -133,14 +135,13 @@ class Hessian:
 
                 v = normalization(Hv)
 
-                if eigenvalue == None:
+                if eigenvalue is None:
                     eigenvalue = tmp_eigenvalue
                 else:
                     if abs(eigenvalue - tmp_eigenvalue) / (abs(eigenvalue) +
                                                            1e-6) < tol:
                         break
-                    else:
-                        eigenvalue = tmp_eigenvalue
+                    eigenvalue = tmp_eigenvalue
             eigenvalues.append(eigenvalue)
             eigenvectors.append(v)
             computed_dim += 1
@@ -158,7 +159,7 @@ class Hessian:
         trace_vhv = []
         trace = 0.
 
-        for i in range(maxIter):
+        for _ in range(maxIter):
             self.model.zero_grad()
             v = [
                 torch.randint_like(p, high=2, device=device)
@@ -175,12 +176,13 @@ class Hessian:
             trace_vhv.append(group_product(Hv, v).cpu().item())
             if abs(np.mean(trace_vhv) - trace) / (abs(trace) + 1e-6) < tol:
                 return trace_vhv
-            else:
-                trace = np.mean(trace_vhv)
+            trace = np.mean(trace_vhv)
 
         return trace_vhv
 
-    def density(self, iter=100, n_v=1):
+    # `iter` shadows the builtin, but it is the vendored PyHessian API name and
+    # callers pass it by keyword -- renaming would break them.
+    def density(self, iter=100, n_v=1):  # pylint: disable=redefined-builtin
         """
         compute estimated eigenvalue density using stochastic lanczos algorithm (SLQ)
         iter: number of iterations used to compute trace
@@ -191,7 +193,7 @@ class Hessian:
         eigen_list_full = []
         weight_list_full = []
 
-        for k in range(n_v):
+        for _ in range(n_v):
             v = [
                 torch.randint_like(p, high=2, device=device)
                 for p in self.params
@@ -243,15 +245,16 @@ class Hessian:
                     w = group_add(w_tmp, v_list[-2], alpha=-beta)
 
             T = torch.zeros(iter, iter).to(device)
-            for i in range(len(alpha_list)):
-                T[i, i] = alpha_list[i]
+            for i, alpha_value in enumerate(alpha_list):
+                T[i, i] = alpha_value
                 if i < len(alpha_list) - 1:
                     T[i + 1, i] = beta_list[i]
                     T[i, i + 1] = beta_list[i]
             # T is real symmetric by construction, so use eigh. The general eig
             # solver can return complex eigenvectors and therefore complex SLQ
             # weights even when the imaginary part is only numerical noise.
-            eigenvalues, eigenvectors = torch.linalg.eigh(T)
+            # (not-callable is a known pylint/torch stub false positive.)
+            eigenvalues, eigenvectors = torch.linalg.eigh(T)  # pylint: disable=not-callable
 
             eigen_list = eigenvalues.detach().cpu().numpy().astype(np.float64)
             weight_list = (

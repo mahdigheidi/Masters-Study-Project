@@ -27,7 +27,9 @@ class EasyMDP(ClassificationMDP):
         return reward, self.state
 
 
-if __name__ == "__main__":
+def _demo():
+    # Lazy imports: matplotlib/torchvision datasets are only needed for the demo.
+    # pylint: disable=import-outside-toplevel
     import matplotlib.pyplot as plt
     from torchvision.datasets import MNIST
 
@@ -36,10 +38,10 @@ if __name__ == "__main__":
 
     env = EasyMDP(dataset)
 
-    fig, axes = plt.subplots(4, 5, figsize=(12, 8))
+    _, axes = plt.subplots(4, 5, figsize=(12, 8))
     axes = axes.flatten()
 
-    for i, ax in enumerate(axes):
+    for ax in axes:
         current_state = env.state
         image = env.sample_observation()
 
@@ -54,7 +56,9 @@ if __name__ == "__main__":
         )
         ax.axis("off")
 
-        # env.state = next_state
-
     plt.tight_layout()
     plt.show()
+
+
+if __name__ == "__main__":
+    _demo()

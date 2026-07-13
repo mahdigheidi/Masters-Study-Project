@@ -28,6 +28,7 @@ dependencies = [
 dev = [
     "ruff==0.8.6",
     "pytest>=8.0",
+    "pylint>=4.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -73,6 +74,40 @@ ignore = [
 # implementation this code is a direct port of.
 "src/pyhessian/hessian.py" = ["N803", "N806"]
 "src/pyhessian/utils.py" = ["N803", "N806"]
+
+[tool.pylint.main]
+# Run as: pylint src tests
+ignore-paths = ["venv", "notebooks", "outputs", "papers", "reports"]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint."messages control"]
+disable = [
+    # Docstring-everywhere requirements don't fit research code; module and
+    # class docstrings exist where they carry real information.
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    # Naming policy is owned by ruff's pep8-naming (N) rules, which carry
+    # documented per-file exceptions for the vendored PyHessian code and
+    # scientific single-letter names. Two naming authorities would conflict.
+    "invalid-name",
+    # `import torch.nn as nn` / `import torch.nn.functional as F` are the
+    # standard PyTorch idioms (same rationale as ruff's N812 ignore).
+    "consider-using-from-import",
+    # The easy/hard/sparse MDPs are deliberately parallel implementations of
+    # the paper's three reward variants; their similarity is the point.
+    "duplicate-code",
+    # Complexity limits: experiment configs and training loops legitimately
+    # take many parameters/locals in this codebase.
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-locals",
+    "too-many-instance-attributes",
+    "too-many-statements",
+    "too-many-branches",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -9,4 +9,4 @@ from .cnn import CNN
 from .mlp import MLP
 from .vit import VisionTransformer
 
-__all__ = ["CNN", "MLP", "ResNet18", "VisionTransformer"]
+__all__ = ["CNN", "MLP", "VisionTransformer"]

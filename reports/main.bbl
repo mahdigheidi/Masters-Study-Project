@@ -1,0 +1,43 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ash and Adams(2020)]{ash2020warm}
+Jordan Ash and Ryan~P Adams.
+\newblock On warm-starting neural network training.
+\newblock \emph{Advances in neural information processing systems}, 33:\penalty0 3884--3894, 2020.
+
+\bibitem[Farebrother et~al.(2024)Farebrother, Orbay, Vuong, Ta{\"\i}ga, Chebotar, Xiao, Irpan, Levine, Castro, Faust, et~al.]{farebrother2024stop}
+Jesse Farebrother, Jordi Orbay, Quan Vuong, Adrien~Ali Ta{\"\i}ga, Yevgen Chebotar, Ted Xiao, Alex Irpan, Sergey Levine, Pablo~Samuel Castro, Aleksandra Faust, et~al.
+\newblock Stop regressing: Training value functions via classification for scalable deep rl.
+\newblock \emph{arXiv preprint arXiv:2403.03950}, 2024.
+
+\bibitem[Lyle et~al.(2023)Lyle, Zheng, Nikishin, Pires, Pascanu, and Dabney]{lyle2023understanding}
+Clare Lyle, Zeyu Zheng, Evgenii Nikishin, Bernardo~Avila Pires, Razvan Pascanu, and Will Dabney.
+\newblock Understanding plasticity in neural networks.
+\newblock In \emph{International Conference on Machine Learning}, pages 23190--23211. PMLR, 2023.
+
+\bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare, Graves, Riedmiller, Fidjeland, Ostrovski, et~al.]{mnih2015human}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei~A Rusu, Joel Veness, Marc~G Bellemare, Alex Graves, Martin Riedmiller, Andreas~K Fidjeland, Georg Ostrovski, et~al.
+\newblock Human-level control through deep reinforcement learning.
+\newblock \emph{nature}, 518\penalty0 (7540):\penalty0 529--533, 2015.
+
+\bibitem[Nikishin et~al.(2022)Nikishin, Schwarzer, D’Oro, Bacon, and Courville]{nikishin2022primacy}
+Evgenii Nikishin, Max Schwarzer, Pierluca D’Oro, Pierre-Luc Bacon, and Aaron Courville.
+\newblock The primacy bias in deep reinforcement learning.
+\newblock In \emph{International conference on machine learning}, pages 16828--16847. PMLR, 2022.
+
+\bibitem[Puderbaugh and Emmady(2023)]{puderbaugh2023neuroplasticity}
+Matt Puderbaugh and Prabhu~D Emmady.
+\newblock Neuroplasticity.
+\newblock In \emph{StatPearls [Internet]}. StatPearls Publishing, 2023.
+
+\bibitem[Silver et~al.(2017)Silver, Schrittwieser, Simonyan, Antonoglou, Huang, Guez, Hubert, Baker, Lai, Bolton, et~al.]{silver2017mastering}
+David Silver, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou, Aja Huang, Arthur Guez, Thomas Hubert, Lucas Baker, Matthew Lai, Adrian Bolton, et~al.
+\newblock Mastering the game of go without human knowledge.
+\newblock \emph{nature}, 550\penalty0 (7676):\penalty0 354--359, 2017.
+
+\end{thebibliography}

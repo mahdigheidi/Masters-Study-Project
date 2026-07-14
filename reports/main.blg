@@ -1,0 +1,61 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+A level-1 auxiliary file: sections/cover.aux
+A level-1 auxiliary file: sections/information.aux
+A level-1 auxiliary file: sections/acknowledgements.aux
+A level-1 auxiliary file: sections/quote.aux
+A level-1 auxiliary file: sections/abstract.aux
+A level-1 auxiliary file: sections/table_of_contents.aux
+A level-1 auxiliary file: sections/motivation.aux
+A level-1 auxiliary file: sections/fundamentals.aux
+A level-1 auxiliary file: sections/methodology.aux
+A level-1 auxiliary file: sections/results.aux
+A level-1 auxiliary file: sections/conclusion.aux
+A level-1 auxiliary file: sections/references.aux
+The style file: plainnat.bst
+Database file #1: references/motivation.bib
+Database file #2: references/fundamentals.bib
+Warning--I didn't find a database entry for "lyle2023plasticity"
+You've used 7 entries,
+            2773 wiz_defined-function locations,
+            653 strings with 6880 characters,
+and the built_in function-call counts, 5179 in all, are:
+= -- 439
+> -- 450
+< -- 4
++ -- 151
+- -- 144
+* -- 463
+:= -- 808
+add.period$ -- 24
+call.type$ -- 7
+change.case$ -- 66
+chr.to.int$ -- 7
+cite$ -- 14
+duplicate$ -- 180
+empty$ -- 315
+format.name$ -- 155
+if$ -- 1070
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 7
+newline$ -- 43
+num.names$ -- 28
+pop$ -- 136
+preamble$ -- 1
+purify$ -- 59
+quote$ -- 0
+skip$ -- 169
+stack$ -- 0
+substring$ -- 191
+swap$ -- 35
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 77
+warning$ -- 0
+while$ -- 33
+width$ -- 0
+write$ -- 99
+(There was 1 warning)

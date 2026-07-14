@@ -1,0 +1,27 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Motivation}{1}{section.1}%
+\contentsline {section}{\numberline {2}Fundamentals}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Stability-Plasticity Dilemma}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Primacy Bias}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Plasticity Loss}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Methodology}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Neural Network Architectures}{3}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Multi-Layer Perceptron (MLP)}{3}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Convolutional Neural Network (CNN)}{3}{subsubsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.2}Datasets}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Measuring Plasticity}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Loss Landscape Analysis}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Experimental Environments}{8}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}EasyMDP}{8}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}HardMDP}{8}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}Sparse-reward MDP}{8}{subsubsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.6}Deep Q-Network Learning}{9}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Results}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Optimizer Instability Under Abrupt Label Changes}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Hessian Spectrum and Gradient Covariance}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Falsification of Simple Explanations}{13}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Learning Curve Evolution on Probe Tasks}{15}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Effect of Network Width on Plasticity Loss}{15}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Effect of Plasticity-Preserving Interventions}{17}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Conclusion}{18}{section.5}%
+\contentsline {section}{Bibliography}{I}{section*.13}%

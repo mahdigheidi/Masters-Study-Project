@@ -1,0 +1,106 @@
+\section{\iflanguage{english}{Results}{Ergebnisse}}
+\label{sec:results}
+
+Using the tools available at our disposal, we will try to do 6 experiments. There are 3 main questions we wish to gain more intuition on. First, we would like to see what would be the result of the networks losing plasticity. Using the first two experiments on trying to add jumps to the optimizers gradient using label change we show that both accuracy drops and many neurons die out. The second one shows that as the training progresses, the covariance between gradients increases and the eigenvalues of the Hessian matrix increase in size. As a result the optimization space will be ill-conditioned and harder to explore by the optimization algorithms. Eigenvalues are the non-turning vectors of a space, when applied an input on the space, those will be only affected in size, so they're a good sign to study the direction of optimization. Here we can see that they're gonna be bigger in value and make learning harder.
+
+Second question we wish to answer, is to what properties would cause plasticity loss? in the 3rd experiment we investigate the effect of long-discussed weight norm, weight rank and other measures and show that there's no correlation. Then we move to our other experiment and try to measure the plasticity of trained networks after arbitrary learning time and see that plasticity drops as training proceeds.
+
+At the end we put an effort to find solutions to alleviate this issue. Would increasing the size of the network be enough? We see that unlike other regimes, in which increasing the capacity will help like supervised learning, in the DRL world that we have non-stationary targets, simply increasing the size of the network has not that effect. Then using three architectures of simple MLPs, CNNs and Vision Transformers, we analyze the effect of few suggested methods and see that the most effective are layer normalization and categorical representations. Then we dive deeper into the effects of these two methods on the network and realize that their effect is to smoothen out the curvature of loss landscape.
+
+
+
+\subsection{Optimizer Instability Under Abrupt Label Changes}
+
+The first reproduced experiment corresponds to Figure~1 of \citet{lyle2023plasticity}. The purpose of this experiment is to study how an adaptive optimizer behaves when the learning objective changes abruptly. In this setting, the network is first trained on MNIST images with randomly assigned labels. After the network has learned this mapping, the labels are randomly reassigned while the input images remain fixed.
+
+This creates a sudden change in the gradient structure. The optimizer must now adapt to a new objective that is inconsistent with the previously learned one. In the case of Adam, the first- and second-moment estimates no longer accurately describe the new gradient distribution. As a result, the effective update sizes can become unstable.
+
+The reproduced experiment shows that this instability can cause a large fraction of hidden ReLU units to become inactive. Once these units die, the network loses effective representational capacity and its ability to learn the new task is strongly reduced. This provides an example of plasticity loss caused by optimizer dynamics under non-stationarity.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 1
+\includegraphics[width=0.9\textwidth]{assets/figure1.png}
+% \fbox{\rule{0pt}{2.6in}\rule{0.85\linewidth}{0pt}}
+\caption{Abrupt label changes destabilize Adam and lead to a large fraction of inactive ReLU units.}
+\label{fig:result_optimizer_instability}
+\end{figure}
+
+\subsection{Hessian Spectrum and Gradient Covariance}
+
+The second reproduced experiment corresponds to Figure~2 of \citet{lyle2023plasticity}. The goal is to compare how the loss landscape evolves under gradient-based optimization versus random perturbations of the parameters. In both cases, the magnitude of the parameter change is controlled, but the direction of the update differs.
+
+The Hessian spectrum is used to analyze the curvature of the probe loss landscape. Larger spectral outliers indicate sharper directions in parameter space and therefore potentially worse optimization conditioning. The reproduced Hessian analysis shows that gradient-based training tends to produce larger Hessian outliers than random Brownian perturbations. This suggests that training does not merely move the network away from initialization, but moves it in directions that make the local loss landscape harder to optimize.
+
+In addition to the Hessian spectrum, gradient covariance matrices are computed to analyze interference between samples. Since the entries of the gradient covariance matrix are cosine similarities between normalized gradient vectors, their values must lie in the interval $[-1,1]$. Therefore, in the reproduced plots we use the corrected color range $[-1,1]$ rather than the wider range shown in the original visualization. This makes the interpretation clearer: positive values indicate aligned gradients, while negative values indicate gradient interference.
+
+The reproduced gradient covariance results show that gradient-based optimization can create more negative interference between samples. This supports the hypothesis that plasticity loss is related not only to sharper curvature, but also to a less favorable gradient structure for adapting to new targets.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 2
+\includegraphics[width=0.85\textwidth]{assets/figure2_true_label_mdp.png}
+% \fbox{\rule{0pt}{3.0in}\rule{0.85\linewidth}{0pt}}
+\caption{Hessian spectra and gradient covariance matrices are computed using the probe loss. For the gradient covariance heatmaps, the color scale is set to $[-1,1]$ because the entries are cosine similarities.}
+\label{fig:result_hessian_gradient_covariance}
+\end{figure}
+
+\subsection{Falsification of Simple Explanations}
+
+The third reproduced experiment corresponds to Figure~3 of \citet{lyle2023plasticity}. This experiment investigates whether previously proposed quantities such as weight norm, weight rank, feature rank, or the number of inactive units can provide a causal explanation of plasticity loss.
+
+The key idea is that a true causal mechanism should show a consistent relationship with plasticity across different environments. However, the reproduced results show that these quantities do not behave consistently. In some settings, the correlation with plasticity loss is positive, while in others it is negative or weak. Therefore, these quantities may be correlated with plasticity loss in particular cases, but they do not provide a general causal explanation.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 3
+% \includegraphics[width=0.85\textwidth]{assets/figure3.png}
+\fbox{\rule{0pt}{3.0in}\rule{0.85\linewidth}{0pt}}
+\caption{Previously proposed explanations do not show a consistent relationship with plasticity loss across environments.}
+\label{fig:result_falsification}
+\end{figure}
+
+\subsection{Learning Curve Evolution on Probe Tasks}
+
+The fourth reproduced experiment corresponds to Figure~4 of \citet{lyle2023plasticity}. The purpose of this experiment is to understand whether plasticity loss corresponds to poor local minima or to slower optimization progress on new objectives.
+
+The reproduced learning curves show that networks from later training checkpoints reduce the probe loss more slowly than networks near initialization. This suggests that plasticity loss is expressed primarily as slower adaptation, rather than simply convergence to a worse final plateau.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 4
+\includegraphics[width=0.85\textwidth]{assets/figure4_full_training.png}
+% \fbox{\rule{0pt}{2.6in}\rule{0.85\linewidth}{0pt}}
+\caption{Later checkpoints show slower optimization on probe tasks, indicating reduced plasticity.}
+\label{fig:result_probe_learning_curves}
+\end{figure}
+
+\subsection{Effect of Network Width on Plasticity Loss}
+
+The fifth reproduced experiment corresponds to Figure~5 of \citet{lyle2023plasticity}. This experiment studies whether increasing network width is sufficient to prevent plasticity loss.
+
+The reproduced results indicate that wider networks generally suffer less plasticity loss than smaller networks. However, increasing width alone does not fully eliminate the problem. This suggests that plasticity loss is not merely a consequence of insufficient model capacity, but is also related to optimization dynamics and the geometry of the loss landscape.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 5
+% \includegraphics[width=0.85\textwidth]{assets/figure5.png}
+\fbox{\rule{0pt}{2.6in}\rule{0.85\linewidth}{0pt}}
+\caption{Increasing width reduces plasticity loss but does not fully remove it.}
+\label{fig:result_width}
+\end{figure}
+
+\subsection{Effect of Plasticity-Preserving Interventions}
+
+The sixth reproduced experiment corresponds to Figure~6 of \citet{lyle2023plasticity}. This experiment compares several interventions designed to reduce plasticity loss, including layer normalization, reset-based methods, shrink-and-perturb, weight decay, spectral normalization, and categorical output representations.
+
+The reproduced results support the conclusion that interventions which improve the smoothness and conditioning of the loss landscape are the most effective. In particular, layer normalization and categorical output representations show strong improvements compared to methods that only perturb or regularize the parameters. This supports the broader hypothesis that plasticity loss is closely related to loss landscape geometry.
+
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 6
+% \includegraphics[width=0.85\textwidth]{assets/figure6.png}
+\fbox{\rule{0pt}{3.0in}\rule{0.85\linewidth}{0pt}}
+\caption{Interventions that smooth or stabilize the loss landscape are most effective at preserving plasticity.}
+\label{fig:result_interventions}
+\end{figure}

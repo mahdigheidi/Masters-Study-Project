@@ -1,0 +1,20 @@
+\section{Motivation}\label{sec:motivation}
+Plasticity is becoming increasingly important as reinforcement learning systems are deployed in environments that continuously evolve.
+
+Unlike traditional supervised learning, reinforcement learning operates under fundamentally non-stationary targets, especially when using value-based learning methods such as learning Q-values.
+
+As the learning progresses during an RL task, policies and state values continuously change, data distributions evolve during training and target moves as learning objectives depend on previous updates, for example in case of temporal-difference learning methods.
+
+As tasks become more complex, the ability of neural networks to remain adaptable becomes increasingly important. For example on longer horizon tasks and continouos action environments there is no other feasible solution than to use neural networks. In that case we need to make sure that this tool is a reliable function approximator to learn the dynamics of a changing environment.
+
+Several recent works suggest that plasticity loss may be one of the major factors limiting the scalability of deep reinforcement learning. This has been noticed before in the deep learning regime, e.g. in the works purely done on supervised learning methods, we see that training the model on some part of the dataset at first and training it again on the second parts results in poor generalization \citep{ash2020warm}. Other works in the DRL have shown that, for example, as off-policy methods rely on using a replay buffer and use the data to train a model, will create the issue that the model overfits to early experiences in a way that harms future learning \citep{nikishin2022primacy}.
+
+Understanding and preventing this phenomenon would lead to:
+
+\begin{itemize}[noitemsep]
+    \item More stable RL algorithms
+    \item Faster adaptation
+    \item Better continual learning
+    \item Improved sample efficiency
+    \item More robust autonomous agents
+\end{itemize}

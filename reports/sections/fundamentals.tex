@@ -1,0 +1,32 @@
+\section{\iflanguage{english}{Fundamentals}{Grundlagen}}\label{sec:fundamentals}
+The roots of this work can be traced to several related research areas.
+
+
+\subsection{Stability-Plasticity Dilemma}
+
+A long-standing challenge in neuroscience and machine learning is balancing stability and adaptability. Systems must preserve useful knowledge while remaining capable of learning new information.
+
+Excessive stability leads to rigidity and inability to learn on new signals.
+Excessive plasticity leads to catasrophic forgetting.
+
+
+\subsection{Primacy Bias}
+
+\citep{nikishin2022primacy} have already demonstrated that early experiences exert disproportionately large influence on neural network representations.
+
+Networks become increasingly biased toward information learned early in training, reducing their ability to adapt later.
+
+
+
+Also \citep{ash2020warm} showed that networks can become increasingly difficult to retrain after prolonged optimization.
+
+Their observations provide evidence that optimization itself changes trainability.
+
+
+\subsection{Plasticity Loss}
+
+The most comprehensive recent study is: \citep{lyle2023understanding} which studies “Understanding Plasticity Loss in Neural Networks”.
+
+This paper provides strong evidence that plasticity loss is fundamentally related to changes in the geometry of the loss landscape rather than simply dead neurons, feature collapse or other previously mentioned improvements on the matter.
+
+In the next section we cover the methodology used to carry out these experiments. We've based this project mainly on this paper.

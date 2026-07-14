@@ -20,6 +20,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import datasets, transforms
+from tqdm.auto import tqdm
 
 from src.agents.replay_buffer import ReplayBuffer
 from src.environments.easy_mdp import EasyMDP
@@ -321,7 +322,7 @@ def run_dqn_training(
         metric_rows.append(metric_callback(0, model, replay))
 
     last_loss = float("nan")
-    for step in range(1, config.train_steps + 1):
+    for step in tqdm(range(1, config.train_steps + 1)):
         epsilon = epsilon_at_step(config, step)
         collect_transition(env, model, replay, epsilon=epsilon, device=device)
         last_loss = train_dqn_step(

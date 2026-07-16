@@ -2,7 +2,7 @@ PWD /Users/mahdigheidi/Documents/Univ/Masters-Study-Project/reports
 INPUT /usr/local/texlive/2026basic/texmf.cnf
 INPUT /usr/local/texlive/2026basic/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2026basic/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/mahdigheidi/Documents/Univ/Masters-Study-Project/reports/main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT /usr/local/texlive/2026basic/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2026basic/texmf-dist/tex/latex/base/article.cls
@@ -560,6 +560,11 @@ OUTPUT sections/methodology.aux
 INPUT ./sections/methodology.tex
 INPUT ./sections/methodology.tex
 INPUT sections/methodology.tex
+INPUT ./assets/nn.png
+INPUT ./assets/nn.png
+INPUT ./assets/nn.png
+INPUT ./assets/nn.png
+INPUT ./assets/nn.png
 INPUT ./assets/hessian_curvature.png
 INPUT ./assets/hessian_curvature.png
 INPUT ./assets/hessian_curvature.png

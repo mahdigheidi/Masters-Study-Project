@@ -15,6 +15,15 @@ The MLP consists of two fully connected hidden layers. Unless otherwise specifie
 
 The CNN architecture consists of two convolutional layers followed by two fully connected layers. The first convolutional layer employs $5 \times 5$ kernels, while the second uses $3 \times 3$ kernels. Both convolutional layers contain 64 feature maps. The extracted features are then processed by two fully connected layers, each containing 256 hidden units before producing the final output.
 
+\begin{figure}[htbp]
+\centering
+% Replace with reproduced Figure 1
+\includegraphics[width=0.9\textwidth]{assets/nn.png}
+% \fbox{\rule{0pt}{2.6in}\rule{0.85\linewidth}{0pt}}
+\caption{CNN on MNIST.}
+\label{fig:cnn_mnist}
+\end{figure}
+
 % \subsubsection{Vision Transformer (ViT)}
 
 % The Vision Transformer implementation follows the architecture proposed by \citet{dosovitskiy2020image}. Images are first divided into patches of size $3 \times 3$, which are embedded into a feature representation before being processed by a transformer encoder. The model uses an embedding dimension of 256, a feed-forward network dimension of 1024, a single transformer encoder block, and a dropout rate of 0.1. Unlike models initialized from pretrained weights, all parameters are trained from scratch during every experiment.

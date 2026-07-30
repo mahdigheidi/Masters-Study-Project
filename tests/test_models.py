@@ -38,21 +38,21 @@ def test_cnn_forward_shape_for_mnist_and_cifar_input():
     assert cifar_logits.shape == (4, 10)
 
 
-def test_vision_transformer_forward_shape():
-    model = VisionTransformer(
-        input_shape=(1, 28, 28),
-        patch_size=4,
-        num_actions=10,
-        dim=16,
-        depth=1,
-        heads=2,
-        mlp_dim=32,
+def test_vision_transformer_forward_shape_for_mnist_and_cifar_input():
+    mnist_model = VisionTransformer(
+        input_shape=(1, 28, 28), patch_size=4, num_actions=10,
+        dim=16, depth=1, heads=2, mlp_dim=32,
     )
-    x = torch.randn(3, 1, 28, 28)
+    cifar_model = VisionTransformer(
+        input_shape=(3, 32, 32), patch_size=4, num_actions=10,
+        dim=16, depth=1, heads=2, mlp_dim=32,
+    )
 
-    logits = model(x)
+    mnist_logits = mnist_model(torch.randn(4, 1, 28, 28))
+    cifar_logits = cifar_model(torch.randn(4, 3, 32, 32))
 
-    assert logits.shape == (3, 10)
+    assert mnist_logits.shape == (4, 10)
+    assert cifar_logits.shape == (4, 10)
 
 
 def test_spectral_norm_flag_wraps_linear_layers():

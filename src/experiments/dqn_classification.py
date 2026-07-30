@@ -35,7 +35,7 @@ def _default_device() -> torch.device:
     if torch.cuda.is_available():
         return torch.device("cuda")
     # Apple-silicon GPU: ~3-4x faster than CPU for this project's batch-512
-    # MLP/CNN training and probe workloads (measured).
+    # MLP/CNN/ViT training and probe workloads (measured).
     if torch.backends.mps.is_available():
         return torch.device("mps")
     return torch.device("cpu")
@@ -66,7 +66,7 @@ class ClassificationDQNConfig:
     target_update_period: int = 1_000
     epsilon_start: float = 1.0
     epsilon_final: float = 0.1
-    epsilon_decay: int = 10_000
+    epsilon_decay: int = 5_000
     use_layernorm: bool = False
     spectral_norm: bool = False
     shrink_perturb_every: Optional[int] = None

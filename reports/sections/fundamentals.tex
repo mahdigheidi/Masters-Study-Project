@@ -4,29 +4,34 @@ The roots of this work can be traced to several related research areas.
 
 \subsection{Stability-Plasticity Dilemma}
 
-A long-standing challenge in neuroscience and machine learning is balancing stability and adaptability. Systems must preserve useful knowledge while remaining capable of learning new information.
+A long-standing challenge in deep reinforcement learning - and more generally in neural networks of all kinds - is balancing stability and adaptability. Systems must preserve useful knowledge while remaining capable of learning new information.
 
-Excessive stability leads to rigidity and inability to learn on new signals.
-Excessive plasticity leads to catasrophic forgetting.
+A trade-off we often encounter in our implementations of the neural networks is the balance between stability and plasticity. Having control and deeper understanding of this phenomenon is crucial for developing robust RL systems. As we often would like to keep the previous knowledge and at the same time learn new information, we need to find a balance between stability and plasticity.
+
+We know that having excessive stability leads to rigidity and inability to learn on new signals. A network which shows frozen-like behavior and is unable to adapt to new information is not useful in a non-stationary environment. On the other hand, having excessive plasticity leads to catastrophic forgetting.
+
+This issue would not be much of a concern in stationary environments, in which the data distribution does not change over time. However, in non-stationary environments, the ability to adapt to new information is crucial for success.
 
 
 \subsection{Primacy Bias}
 
-\citep{nikishin2022primacy} have already demonstrated that early experiences exert disproportionately large influence on neural network representations.
+Neural networks have been developed based on the idea of a neural system of the human brain. Primacy bias, also known as the primacy effect was introduced as the idea of cognitive bias that describes the tendency for humans to remember information presented at the beginning of a sequence better than information presented later on. This bias has been observed in various contexts, including memory recall, decision-making, and learning.
+For example on learning a new language, if we happen to learn the pronunciation of a word incorrectly at first, we will have a hard time to correct it later on. This is because the initial information we absorb has a stronger influence on our memory and perception than subsequent information. That is why we often have a hard time to correct our mistakes and learn new information. This bias can have significant implications for learning and decision-making, as it can lead to the formation of inaccurate or incomplete mental representations of information.
+
+Neural networks show the same tendency to be influenced by early experiences, which can lead to a bias in the learned representations and affect the network's ability to learn from new information. \citep{nikishin2022primacy} have already demonstrated that early experiences exert disproportionately large influence on neural network representations.
 
 Networks become increasingly biased toward information learned early in training, reducing their ability to adapt later.
 
 
-
-Also \citep{ash2020warm} showed that networks can become increasingly difficult to retrain after prolonged optimization.
-
-Their observations provide evidence that optimization itself changes trainability.
-
-
 \subsection{Plasticity Loss}
 
-The most comprehensive recent study is: \citep{lyle2023understanding} which studies “Understanding Plasticity Loss in Neural Networks”.
+Building on what we have already discussed, we can define plasticity loss as the loss of the ability of a neural network to adapt to new information over time. This phenomenon is particularly relevant in the context of deep reinforcement learning, where agents must continuously learn and adapt to changing environments.
 
-This paper provides strong evidence that plasticity loss is fundamentally related to changes in the geometry of the loss landscape rather than simply dead neurons, feature collapse or other previously mentioned improvements on the matter.
+\citep{ash2020warm} showed that networks can become increasingly difficult to retrain after prolonged optimization. Their observations provide evidence that optimization itself changes trainability.
+In the following sections we show that a trained network will have a harder time to adapt to new learning signals, compared to a network that has been freshly initialized. This is a clear indication of the primacy bias in neural networks, which can and will effectively lead to plasticity loss and reduced adaptability over time.
 
-In the next section we cover the methodology used to carry out these experiments. We've based this project mainly on this paper.
+The most comprehensive recent study presented as a benchmark, which also discusses some remediation methods is \citep{lyle2023understanding}.
+
+This paper provides strong evidence that plasticity loss is fundamentally related to changes in the geometry of the loss landscape rather than simple explanations, e.g. dead neurons, low capacity or other previously mentioned improvements on the matter.
+
+In the next section we cover the methodology used to carry out these experiments. We've based this project mainly on the ideas adapted from this paper.

@@ -23,6 +23,6 @@
 \contentsline {subsection}{\numberline {4.3}Falsification of Simple Explanations}{15}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}Learning Curve Evolution on Probe Tasks}{15}{subsection.4.4}%
 \contentsline {subsection}{\numberline {4.5}Effect of Network Width on Plasticity Loss}{16}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Effect of Plasticity-Preserving Interventions}{17}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Conclusion}{18}{section.5}%
+\contentsline {subsection}{\numberline {4.6}Effect of Plasticity-Preserving Interventions}{16}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Conclusion}{19}{section.5}%
 \contentsline {section}{Bibliography}{I}{section*.13}%

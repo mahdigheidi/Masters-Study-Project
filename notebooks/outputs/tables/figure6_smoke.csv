@@ -1,2 +1,2 @@
 seed,observation_space,environment,architecture,intervention,probe_loss,initial_probe_loss,plasticity_loss,last_training_loss
-0,mnist,easy,mlp,neither,0.1407029926776886,0.03930024802684784,0.10140274465084076,0.015946822240948677
+0,mnist,easy,mlp,neither,0.13207777589559555,0.041737185791134834,0.09034059010446072,0.019465556368231773

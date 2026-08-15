@@ -50,6 +50,8 @@ notebooks/*.pdf
 pip-log.txt
 pip-delete-this-directory.txt
 
+reports/*
+
 # Unit test / coverage reports
 .tox/
 .nox/
